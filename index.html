@@ -138,22 +138,24 @@
             margin-top: 10px;
             display: none;
         }
+
+        .no-timeline {
+            color: #777;
+            font-style: italic;
+            padding: 8px 0;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- HEADER -->
         <div class="header">📦 EXPRESS TRACKING</div>
         <div class="sub">Lacak Pengiriman Anda</div>
 
-        <!-- INPUT -->
         <input id="resi" placeholder="Masukkan Nomor Resi" value="WS250704001" />
 
-        <!-- TOMBOL -->
         <button onclick="cekResi()">LACAK PENGIRIMAN</button>
 
-        <!-- HASIL (awalnya disembunyikan) -->
         <div id="hasil">
             <div class="status" id="status"></div>
             <div class="info">
@@ -167,7 +169,6 @@
             <div class="timeline" id="timeline"></div>
         </div>
 
-        <!-- ERROR (akan muncul jika resi tidak ditemukan) -->
         <div id="error" class="error-box"></div>
 
         <div class="footer">© 2026 Express Tracking</div>
@@ -175,40 +176,33 @@
 
     <script>
         // ----------------------------------------------------------------
-        // 1. DATA RESI (HARDCODE) – TAMBAHKAN SESUAI KEBUTUHAN
+        // DATA RESI – tambahkan sesuai kebutuhan
         // ----------------------------------------------------------------
         const dataResi = {
             "WS250704001": {
                 nama: "flora/qori",
                 status: "on hold",
                 timeline: [
-                     
+                    ["04 Jul 2026 08:00", "Pesanan diterima"],
+                    ["04 Jul 2026 09:30", "Pesanan diproses"],
+                    ["04 Jul 2026 11:20", "Pesanan dikemas"],
+                    ["04 Jul 2026 13:10", "Diserahkan ke kurir"],
                     ["04 Jul 2026 15:45", "On hold - kirim ulang"]
                 ]
             }
-            // Jika mau tambah resi lain, tulis seperti ini:
-            // "WS250704002": {
-            //     nama: "budi",
-            //     status: "delivered",
-            //     timeline: [
-            //         ["04 Jul 2026 09:00", "Pesanan diterima"],
-            //         ["05 Jul 2026 10:00", "Telah sampai tujuan"]
-            //     ]
-            // }
+            // Tambah resi lain di sini
         };
 
         // ----------------------------------------------------------------
-        // 2. FUNGSI CEK RESI
+        // CEK RESI
         // ----------------------------------------------------------------
         function cekResi() {
             const input = document.getElementById("resi");
             const nomor = input.value.trim().toUpperCase();
 
-            // Sembunyikan hasil & error sebelumnya
             document.getElementById("hasil").style.display = "none";
             document.getElementById("error").style.display = "none";
 
-            // Validasi input kosong
             if (nomor === "") {
                 const err = document.getElementById("error");
                 err.textContent = "⚠️ Silakan masukkan nomor resi.";
@@ -216,30 +210,38 @@
                 return;
             }
 
-            // Cari data
             const data = dataResi[nomor];
 
             if (data) {
-                // Tampilkan hasil
                 document.getElementById("hasil").style.display = "block";
                 document.getElementById("nomor").textContent = nomor;
                 document.getElementById("nama").textContent = data.nama;
                 document.getElementById("status").textContent = data.status;
 
-                // Buat timeline
-                let html = "";
-                data.timeline.forEach(function(item) {
-                    html += `
-                        <div class="item">
-                            <div class="waktu">${item[0]}</div>
-                            <div class="pesan">${item[1]}</div>
-                        </div>
-                    `;
+                // =========================================================
+                // FILTER TIMELINE: HANYA TAMPILKAN YANG MENGANDUNG "on hold"
+                // =========================================================
+                const filtered = data.timeline.filter(item => {
+                    return item[1].toLowerCase().includes("on hold");
                 });
+
+                let html = "";
+                if (filtered.length > 0) {
+                    filtered.forEach(function(item) {
+                        html += `
+                            <div class="item">
+                                <div class="waktu">${item[0]}</div>
+                                <div class="pesan">${item[1]}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    // Jika tidak ada yang "on hold", tampilkan pesan
+                    html = `<div class="no-timeline">Tidak ada update on hold.</div>`;
+                }
                 document.getElementById("timeline").innerHTML = html;
 
             } else {
-                // Resi tidak ditemukan
                 const err = document.getElementById("error");
                 err.textContent = `❌ Nomor resi ${nomor} tidak ditemukan.`;
                 err.style.display = "block";
@@ -247,7 +249,7 @@
         }
 
         // ----------------------------------------------------------------
-        // 3. OTOMATIS CEK SAAT HALAMAN DIMUAT (jika input sudah terisi)
+        // OTOMATIS CEK SAAT LOAD
         // ----------------------------------------------------------------
         window.addEventListener("load", function() {
             const input = document.getElementById("resi");
@@ -257,7 +259,7 @@
         });
 
         // ----------------------------------------------------------------
-        // 4. TEKAN ENTER UNTUK MENCARI
+        // ENTER UNTUK MENCARI
         // ----------------------------------------------------------------
         document.getElementById("resi").addEventListener("keydown", function(e) {
             if (e.key === "Enter") {
@@ -266,5 +268,6 @@
         });
     </script>
 </body>
-</html>
+    </html>
+
 
