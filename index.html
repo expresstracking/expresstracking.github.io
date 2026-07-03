@@ -152,7 +152,8 @@
         <div class="header">📦 EXPRESS TRACKING</div>
         <div class="sub">Lacak Pengiriman Anda</div>
 
-        <input id="resi" placeholder="Masukkan Nomor Resi" value="WS250704001" />
+        <!-- Input KOSONG, user harus mengetik sendiri -->
+        <input id="resi" placeholder="Masukkan Nomor Resi" />
 
         <button onclick="cekResi()">LACAK PENGIRIMAN</button>
 
@@ -176,7 +177,7 @@
 
     <script>
         // ----------------------------------------------------------------
-        // DATA RESI – tambahkan sesuai kebutuhan
+        // DATA RESI (hardcode) – tambahkan sesuai kebutuhan
         // ----------------------------------------------------------------
         const dataResi = {
             "WS250704001": {
@@ -194,12 +195,13 @@
         };
 
         // ----------------------------------------------------------------
-        // CEK RESI
+        // FUNGSI CEK RESI
         // ----------------------------------------------------------------
         function cekResi() {
             const input = document.getElementById("resi");
             const nomor = input.value.trim().toUpperCase();
 
+            // Sembunyikan hasil & error sebelumnya
             document.getElementById("hasil").style.display = "none";
             document.getElementById("error").style.display = "none";
 
@@ -218,9 +220,7 @@
                 document.getElementById("nama").textContent = data.nama;
                 document.getElementById("status").textContent = data.status;
 
-                // =========================================================
-                // FILTER TIMELINE: HANYA TAMPILKAN YANG MENGANDUNG "on hold"
-                // =========================================================
+                // Filter timeline hanya yang mengandung "on hold"
                 const filtered = data.timeline.filter(item => {
                     return item[1].toLowerCase().includes("on hold");
                 });
@@ -236,7 +236,6 @@
                         `;
                     });
                 } else {
-                    // Jika tidak ada yang "on hold", tampilkan pesan
                     html = `<div class="no-timeline">Tidak ada update on hold.</div>`;
                 }
                 document.getElementById("timeline").innerHTML = html;
@@ -249,17 +248,11 @@
         }
 
         // ----------------------------------------------------------------
-        // OTOMATIS CEK SAAT LOAD
+        // TIDAK ADA PEMANGGILAN OTOMATIS SAAT LOAD → halaman kosong
         // ----------------------------------------------------------------
-        window.addEventListener("load", function() {
-            const input = document.getElementById("resi");
-            if (input.value.trim() !== "") {
-                cekResi();
-            }
-        });
 
         // ----------------------------------------------------------------
-        // ENTER UNTUK MENCARI
+        // TEKAN ENTER UNTUK MENCARI
         // ----------------------------------------------------------------
         document.getElementById("resi").addEventListener("keydown", function(e) {
             if (e.key === "Enter") {
@@ -268,6 +261,5 @@
         });
     </script>
 </body>
-    </html>
-
+</html>
 
