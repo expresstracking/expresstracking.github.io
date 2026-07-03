@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Express Tracking</title>
     <style>
         * {
@@ -11,6 +11,7 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
+
         body {
             background: #f0f2f5;
             display: flex;
@@ -19,481 +20,253 @@
             min-height: 100vh;
             padding: 16px;
         }
+
         .container {
             background: white;
-            max-width: 420px;
-            width: 100%;
-            padding: 30px 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 95%;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
             text-align: center;
         }
-        h1 {
+
+        .header {
             font-size: 24px;
+            font-weight: bold;
             color: #1a237e;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
+
         .sub {
             color: #555;
             font-size: 14px;
-            margin-bottom: 24px;
-        }
-        .input-group {
-            display: flex;
-            gap: 8px;
             margin-bottom: 20px;
         }
-        .input-group input {
-            flex: 1;
-            padding: 12px 16px;
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 17px;
+            border-radius: 10px;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
             text-transform: uppercase;
         }
-        .input-group button {
-            background: #1a237e;
-            color: white;
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 16px;
+            background: #1565c0;
+            color: white;
+            font-size: 17px;
             font-weight: bold;
+            border-radius: 10px;
             cursor: pointer;
             transition: 0.2s;
         }
-        .input-group button:hover {
-            background: #0d1442;
+
+        button:hover {
+            background: #0d47a1;
         }
-        #result {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 8px;
-            background: #f8f9fa;
+
+        #hasil {
+            margin-top: 25px;
+            display: none;
             text-align: left;
-            font-size: 15px;
-            line-height: 1.6;
-            min-height: 60px;
         }
-        .error {
-            color: #b71c1c;
-            background: #ffebee;
-            padding: 12px;
-            border-radius: 8px;
-        }
-        .success {
-            color: #1e4620;
+
+        .status {
             background: #e8f5e9;
             padding: 12px;
             border-radius: 8px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2e7d32;
         }
+
+        .info {
+            margin-bottom: 15px;
+        }
+
+        .timeline {
+            border-left: 4px solid #1565c0;
+            padding-left: 18px;
+        }
+
+        .item {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .item::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            background: #1565c0;
+            border-radius: 50%;
+            position: absolute;
+            left: -25px;
+            top: 4px;
+        }
+
+        .waktu {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .pesan {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
         .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #888;
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .error-box {
+            background: #ffebee;
+            color: #b71c1c;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>📦 EXPRESS TRACKING</h1>
-    <p class="sub">Lacak Pengiriman Anda</p>
 
-    <div class="input-group">
-        <input type="text" id="inputResi" placeholder="Masukkan nomor resi" value="WS250704001">
-        <button id="btnLacak">LACAK</button>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">📦 EXPRESS TRACKING</div>
+        <div class="sub">Lacak Pengiriman Anda</div>
+
+        <!-- INPUT -->
+        <input id="resi" placeholder="Masukkan Nomor Resi" value="WS250704001" />
+
+        <!-- TOMBOL -->
+        <button onclick="cekResi()">LACAK PENGIRIMAN</button>
+
+        <!-- HASIL (awalnya disembunyikan) -->
+        <div id="hasil">
+            <div class="status" id="status"></div>
+            <div class="info">
+                <b>Nomor Resi</b>
+                <div id="nomor"></div>
+            </div>
+            <div class="info">
+                <b>Penerima</b>
+                <div id="nama"></div>
+            </div>
+            <div class="timeline" id="timeline"></div>
+        </div>
+
+        <!-- ERROR (akan muncul jika resi tidak ditemukan) -->
+        <div id="error" class="error-box"></div>
+
+        <div class="footer">© 2026 Express Tracking</div>
     </div>
 
-    <div id="result">
-        <!-- Hasil akan muncul di sini -->
-    </div>
-    <div class="footer">© 2026 Express Tracking</div>
-</div>
+    <script>
+        // ----------------------------------------------------------------
+        // 1. DATA RESI (HARDCODE) – TAMBAHKAN SESUAI KEBUTUHAN
+        // ----------------------------------------------------------------
+        const dataResi = {
+            "WS250704001": {
+                nama: "flora/qori",
+                status: "on hold",
+                timeline: [
+                    ["04 Jul 2026 08:00", "Pesanan diterima"],
+                    ["04 Jul 2026 09:30", "Pesanan diproses"],
+                    ["04 Jul 2026 11:20", "Pesanan dikemas"],
+                    ["04 Jul 2026 13:10", "Diserahkan ke kurir"],
+                    ["04 Jul 2026 15:45", "On hold - kirim ulang"]
+                ]
+            }
+            // Jika mau tambah resi lain, tulis seperti ini:
+            // "WS250704002": {
+            //     nama: "budi",
+            //     status: "delivered",
+            //     timeline: [
+            //         ["04 Jul 2026 09:00", "Pesanan diterima"],
+            //         ["05 Jul 2026 10:00", "Telah sampai tujuan"]
+            //     ]
+            // }
+        };
 
-<script>
-    // ------------------------------------------------------------
-    // 1. DATA RESI (hardcode) - TAMBAHKAN RESI LAIN DI SINI
-    // ------------------------------------------------------------
-    const dataResi = {
-        "WS250704001": {
-            nama: "flora/qori",
-            tanggal: "04 Jul 2026",
-            status: "on hold",
-            keterangan: "kirim ulang"
+        // ----------------------------------------------------------------
+        // 2. FUNGSI CEK RESI
+        // ----------------------------------------------------------------
+        function cekResi() {
+            const input = document.getElementById("resi");
+            const nomor = input.value.trim().toUpperCase();
+
+            // Sembunyikan hasil & error sebelumnya
+            document.getElementById("hasil").style.display = "none";
+            document.getElementById("error").style.display = "none";
+
+            // Validasi input kosong
+            if (nomor === "") {
+                const err = document.getElementById("error");
+                err.textContent = "⚠️ Silakan masukkan nomor resi.";
+                err.style.display = "block";
+                return;
+            }
+
+            // Cari data
+            const data = dataResi[nomor];
+
+            if (data) {
+                // Tampilkan hasil
+                document.getElementById("hasil").style.display = "block";
+                document.getElementById("nomor").textContent = nomor;
+                document.getElementById("nama").textContent = data.nama;
+                document.getElementById("status").textContent = data.status;
+
+                // Buat timeline
+                let html = "";
+                data.timeline.forEach(function(item) {
+                    html += `
+                        <div class="item">
+                            <div class="waktu">${item[0]}</div>
+                            <div class="pesan">${item[1]}</div>
+                        </div>
+                    `;
+                });
+                document.getElementById("timeline").innerHTML = html;
+
+            } else {
+                // Resi tidak ditemukan
+                const err = document.getElementById("error");
+                err.textContent = `❌ Nomor resi ${nomor} tidak ditemukan.`;
+                err.style.display = "block";
+            }
         }
-        // Jika ingin menambah resi lain, tulis seperti di bawah:
-        // "WS250704002": {
-        //     nama: "budi",
-        //     tanggal: "05 Jul 2026",
-        //     status: "delivered",
-        //     keterangan: "diterima"
-        // }
-    };
 
-    // ------------------------------------------------------------
-    // 2. FUNGSI PENCARIAN
-    // ------------------------------------------------------------
-    function cariResi(nomor) {
-        const key = nomor.trim().toUpperCase();
-        if (dataResi[key]) {
-            return dataResi[key];
-        } else {
-            return null;
-        }
-    }
+        // ----------------------------------------------------------------
+        // 3. OTOMATIS CEK SAAT HALAMAN DIMUAT (jika input sudah terisi)
+        // ----------------------------------------------------------------
+        window.addEventListener("load", function() {
+            const input = document.getElementById("resi");
+            if (input.value.trim() !== "") {
+                cekResi();
+            }
+        });
 
-    // ------------------------------------------------------------
-    // 3. TAMPILKAN HASIL
-    // ------------------------------------------------------------
-    function tampilkanHasil(nomor) {
-        const resultDiv = document.getElementById('result');
-        const data = cariResi(nomor);
-
-        if (data) {
-            resultDiv.innerHTML = `
-                <div class="success">
-                    <strong>✅ Resi ditemukan</strong><br>
-                    <strong>Nama:</strong> ${data.nama}<br>
-                    <strong>Tanggal:</strong> ${data.tanggal}<br>
-                    <strong>Status:</strong> ${data.status}<br>
-                    <strong>Keterangan:</strong> ${data.keterangan}
-                </div>
-            `;
-        } else {
-            resultDiv.innerHTML = `
-                <div class="error">
-                    ❌ Nomor resi <strong>${nomor.trim().toUpperCase()}</strong> tidak ditemukan.
-                </div>
-            `;
-        }
-    }
-
-    // ------------------------------------------------------------
-    // 4. EVENT LISTENER (saat tombol diklik)
-    // ------------------------------------------------------------
-    document.getElementById('btnLacak').addEventListener('click', function() {
-        const input = document.getElementById('inputResi');
-        const nomor = input.value;
-        if (nomor.trim() === '') {
-            document.getElementById('result').innerHTML = `
-                <div class="error">⚠️ Silakan masukkan nomor resi.</div>
-            `;
-            return;
-        }
-        tampilkanHasil(nomor);
-    });
-
-    // ------------------------------------------------------------
-    // 5. OPSIONAL: Saat user tekan Enter di input, otomatis cari
-    // ------------------------------------------------------------
-    document.getElementById('inputResi').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            document.getElementById('btnLacak').click();
-        }
-    });
-
-    // ------------------------------------------------------------
-    // 6. (Opsional) Tampilkan hasil default untuk resi yang sudah diisi
-    // ------------------------------------------------------------
-    // Saat halaman dimuat, jika input sudah ada isinya, langsung cari
-    window.addEventListener('load', function() {
-        const defaultNomor = document.getElementById('inputResi').value;
-        if (defaultNomor.trim() !== '') {
-            tampilkanHasil(defaultNomor);
-        }
-    });
-</script>
+        // ----------------------------------------------------------------
+        // 4. TEKAN ENTER UNTUK MENCARI
+        // ----------------------------------------------------------------
+        document.getElementById("resi").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                cekResi();
+            }
+        });
+    </script>
 </body>
 </html>
-background:white;
-
-width:95%;
-
-max-width:500px;
-
-margin:20px auto;
-
-padding:20px;
-
-border-radius:15px;
-
-box-shadow:0 5px 15px rgba(0,0,0,.15);
-
-}
-
-input{
-
-width:100%;
-
-padding:15px;
-
-font-size:17px;
-
-border-radius:10px;
-
-border:1px solid #ccc;
-
-}
-
-button{
-
-width:100%;
-
-padding:15px;
-
-margin-top:15px;
-
-border:none;
-
-background:#1565c0;
-
-color:white;
-
-font-size:17px;
-
-border-radius:10px;
-
-}
-
-button:hover{
-
-background:#0d47a1;
-
-}
-
-#hasil{
-
-margin-top:25px;
-
-display:none;
-
-}
-
-.status{
-
-background:#e8f5e9;
-
-padding:12px;
-
-border-radius:8px;
-
-font-weight:bold;
-
-margin-bottom:20px;
-
-color:#2e7d32;
-
-}
-
-.info{
-
-margin-bottom:15px;
-
-}
-
-.timeline{
-
-border-left:4px solid #1565c0;
-
-padding-left:18px;
-
-}
-
-.item{
-
-margin-bottom:18px;
-
-position:relative;
-
-}
-
-.item::before{
-
-content:"";
-
-width:12px;
-
-height:12px;
-
-background:#1565c0;
-
-border-radius:50%;
-
-position:absolute;
-
-left:-25px;
-
-top:4px;
-
-}
-
-.waktu{
-
-font-size:13px;
-
-color:#777;
-
-}
-
-.pesan{
-
-font-size:16px;
-
-margin-top:5px;
-
-}
-
-.footer{
-
-text-align:center;
-
-margin:25px;
-
-color:#666;
-
-font-size:13px;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="header">
-
-EXPRESS TRACKING
-
-<div class="sub">
-
-Lacak Pengiriman Anda
-
-</div>
-
-</div>
-
-<div class="card">
-
-<input
-
-id="resi"
-
-placeholder="Masukkan Nomor Resi">
-
-<button onclick="cekResi()">
-
-LACAK PENGIRIMAN
-
-</button>
-
-<div id="hasil">
-
-<div class="status" id="status"></div>
-
-<div class="info">
-
-<b>Nomor Resi</b>
-
-<div id="nomor"></div>
-
-</div>
-
-<div class="info">
-
-<b>Penerima</b>
-
-<div id="nama"></div>
-
-</div>
-
-<div class="timeline" id="timeline">
-
-</div>
-
-</div>
-
-</div>
-
-<div class="footer">
-
-© 2026 Express Tracking
-
-</div>
-
-<script>
-
-const data={
-
-"EXP001":{
-
-nama:"Muhammad Farid",
-
-status:"Sedang Dalam Perjalanan",
-
-timeline:[
-
-["04 Jul 2026 09:20","Pesanan diterima"],
-
-["04 Jul 2026 10:15","Pesanan diproses"],
-
-["04 Jul 2026 12:10","Pesanan dikemas"],
-
-["04 Jul 2026 15:00","Diserahkan ke kurir"],
-
-["05 Jul 2026 08:30","Sedang dalam perjalanan"]
-
-]
-
-}
-
-};
-
-function cekResi(){
-
-let r=document.getElementById("resi").value.toUpperCase();
-
-if(data[r]){
-
-document.getElementById("hasil").style.display="block";
-
-document.getElementById("nomor").innerHTML=r;
-
-document.getElementById("nama").innerHTML=data[r].nama;
-
-document.getElementById("status").innerHTML=data[r].status;
-
-let t="";
-
-data[r].timeline.forEach(function(i){
-
-t+=`
-
-<div class="item">
-
-<div class="waktu">${i[0]}</div>
-
-<div class="pesan">${i[1]}</div>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("timeline").innerHTML=t;
-
-}else{
-
-alert("Nomor resi tidak ditemukan");
-
-}
-
-}
-
-</script>
-
-</body>
-
-  </html>
-
