@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Express Tracking</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+}
+
+.header{
+background:#1565c0;
+color:white;
+padding:20px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+}
+
+.sub{
+font-size:14px;
+margin-top:5px;
+opacity:.9;
+}
+
+.card{
+
+background:white;
+
+width:95%;
+
+max-width:500px;
+
+margin:20px auto;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+}
+
+input{
+
+width:100%;
+
+padding:15px;
+
+font-size:17px;
+
+border-radius:10px;
+
+border:1px solid #ccc;
+
+}
+
+button{
+
+width:100%;
+
+padding:15px;
+
+margin-top:15px;
+
+border:none;
+
+background:#1565c0;
+
+color:white;
+
+font-size:17px;
+
+border-radius:10px;
+
+}
+
+button:hover{
+
+background:#0d47a1;
+
+}
+
+#hasil{
+
+margin-top:25px;
+
+display:none;
+
+}
+
+.status{
+
+background:#e8f5e9;
+
+padding:12px;
+
+border-radius:8px;
+
+font-weight:bold;
+
+margin-bottom:20px;
+
+color:#2e7d32;
+
+}
+
+.info{
+
+margin-bottom:15px;
+
+}
+
+.timeline{
+
+border-left:4px solid #1565c0;
+
+padding-left:18px;
+
+}
+
+.item{
+
+margin-bottom:18px;
+
+position:relative;
+
+}
+
+.item::before{
+
+content:"";
+
+width:12px;
+
+height:12px;
+
+background:#1565c0;
+
+border-radius:50%;
+
+position:absolute;
+
+left:-25px;
+
+top:4px;
+
+}
+
+.waktu{
+
+font-size:13px;
+
+color:#777;
+
+}
+
+.pesan{
+
+font-size:16px;
+
+margin-top:5px;
+
+}
+
+.footer{
+
+text-align:center;
+
+margin:25px;
+
+color:#666;
+
+font-size:13px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+EXPRESS TRACKING
+
+<div class="sub">
+
+Lacak Pengiriman Anda
+
+</div>
+
+</div>
+
+<div class="card">
+
+<input
+
+id="resi"
+
+placeholder="Masukkan Nomor Resi">
+
+<button onclick="cekResi()">
+
+LACAK PENGIRIMAN
+
+</button>
+
+<div id="hasil">
+
+<div class="status" id="status"></div>
+
+<div class="info">
+
+<b>Nomor Resi</b>
+
+<div id="nomor"></div>
+
+</div>
+
+<div class="info">
+
+<b>Penerima</b>
+
+<div id="nama"></div>
+
+</div>
+
+<div class="timeline" id="timeline">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+
+© 2026 Express Tracking
+
+</div>
+
+<script>
+
+const data={
+
+"EXP001":{
+
+nama:"Muhammad Farid",
+
+status:"Sedang Dalam Perjalanan",
+
+timeline:[
+
+["04 Jul 2026 09:20","Pesanan diterima"],
+
+["04 Jul 2026 10:15","Pesanan diproses"],
+
+["04 Jul 2026 12:10","Pesanan dikemas"],
+
+["04 Jul 2026 15:00","Diserahkan ke kurir"],
+
+["05 Jul 2026 08:30","Sedang dalam perjalanan"]
+
+]
+
+}
+
+};
+
+function cekResi(){
+
+let r=document.getElementById("resi").value.toUpperCase();
+
+if(data[r]){
+
+document.getElementById("hasil").style.display="block";
+
+document.getElementById("nomor").innerHTML=r;
+
+document.getElementById("nama").innerHTML=data[r].nama;
+
+document.getElementById("status").innerHTML=data[r].status;
+
+let t="";
+
+data[r].timeline.forEach(function(i){
+
+t+=`
+
+<div class="item">
+
+<div class="waktu">${i[0]}</div>
+
+<div class="pesan">${i[1]}</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("timeline").innerHTML=t;
+
+}else{
+
+alert("Nomor resi tidak ditemukan");
+
+}
+
+}
+
+</script>
+
+</body>
+
+  </html>
